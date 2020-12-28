@@ -1,0 +1,50 @@
+1. #command to replace spaces with underscore
+
+sed -i 's/ /_/g' filename.txt
+
+2. #command to add gene tags- Tag_n in headers
+
+awk '/^>/{print ">Myx_"++i_$0;next}{print}' original_filename > new_file
+
+3. #command to add gene tags like Tag_000n in headers
+
+count=1
+for s in $(seq -f "%04g" 1 7340);
+do 
+	grep ">" Myx_cds_from_genome1.fna | sed -i 's/_'$count'_lcl/_'$s'_peg_lcl/g' Myx_cds_from_genome1.fna
+	count=`expr $count + 1`
+	
+done
+
+4. #command to add gene_tag in files input by user
+
+count=0
+echo "enter a file name:"
+read filen
+v=$(grep ">" $filen | wc -l)                       
+
+for s in $(seq -f "%04g" 1 $v );
+do 
+	grep ">" $filen | sed -i 's/_'$count'_lcl/_'$s'_peg_lcl/g' "$filen"
+	count=`expr $count + 1`
+	echo $count $s
+	
+done
+
+5. # command to take argument in command line
+
+count=0
+
+v=$(grep ">" $1 | wc -l)                       
+
+for s in $(seq -f "%04g" 1 $v );
+do 
+	grep ">" $1 | sed -i 's/_'$count'_lcl/_'$s'_peg_lcl/g' "$1"
+	count=`expr $count + 1`
+	echo $count $s
+	
+done
+
+6. to modify all the files in a folder
+
+sed -i -e '/^>/ s/>lcl/_lcl/g' Translated_cds/*
